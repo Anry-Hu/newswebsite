@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	   xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>后台管理</title>
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
+	<script src="js/newswebsite.js"></script>
+</head>
+<body>
+<!-- Header -->
+<div id="header">
+	<div class="shell">
+		<!-- Logo + Top Nav -->
+		<div id="top">
+			<h1><a href="user.html">后台管理</a></h1>
+			<div id="top-navigation" style="display:block">
+				欢迎 <strong th:text="${loginName}">管理员</strong>
+				<span>|</span>
+				<a href="#">个人设置</a>
+				<span>|</span>
+				<a th:href="@{/}">退出登录</a>
+			</div>
+		</div>
+		<!-- End Logo + Top Nav -->
+		
+		<!-- Main Nav -->
+		<div id="navigation">
+			<ul>
+                <li><a th:href="@{/user}" id="tab1" ><span>User</span></a></li>
+                <li><a th:href="@{/news}" id="tab2"><span>News</span></a></li>
+                <li><a th:href="@{/tags}" id="tab4" class="active"><span>Tag</span></a></li>
+				<li><a th:href="@{/toppic}" id="tab5" ><span>TopPic</span></a></li>
+                <li><a th:href="@{/userrecord}" id="tab10" ><span>UserRecordFile</span></a></li>
+                <li><a th:href="@{/adminrecord}" id="tab11" ><span>AdmRecordFile</span></a></li>
+				<li><a th:href="@{/statistic}" id="tab12" ><span>Statistic</span></a></li>
+			</ul>
+		</div>
+		<!-- End Main Nav -->
+	</div>
+</div>
+<!-- End Header -->
+<!-- Container -->
+<div id="container">
+	<div class="shell">		
+		<!-- Small Nav -->
+		<div id="tit" class="small-nav">
+			标签信息管理
+		</div>
+		<!-- End Small Nav -->
+		<!-- Main -->
+		<div id="main">
+			<div class="cl">&nbsp;</div>
+			<!-- Content -->
+			<div id="content">
+				<!-- Box -->
+				<div class="box">
+					<!-- Box Head -->
+					<div class="box-head">
+						<h2 id="charttit" class="left">标签信息表</h2>
+					</div>
+					<!-- End Box Head -->	
+
+					<!-- Table -->
+                    <div class="table" id="chart" style="height:376px;overflow-y:scroll">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr id="chartheader">
+								<th>标签编号</th>
+								<th>标签名称</th>
+											
+								<th style="width:100px;text-align:center">操作</th>
+							</tr>
+							<tr th:each="Tags:${tags}">
+								<td th:text="${Tags.getTagID()}"></td>
+								<td th:text="${Tags.getName()}"></td>
+                                <td><a th:href="@{'/tags/delete/'+${Tags.getTagID()}}" class="ico del">Delete</a>
+                                    <a class="ico edit" th:onclick="'javascript:editTag(\''+${Tags.getTagID()}+'\',\''+${Tags.getName()}+'\')'">Edit</a></td>
+							</tr>
+						</table>
+						
+						<!-- Pagging -->
+						<div class="pagging">
+                            <div class="left"><span th:text="共+${colNum}+条记录"></span></div>
+                            <div class="right" >
+                                <form th:action="@{/tags/pagePrevious}" method="post">
+                                    <input type="text" name="pageNum" id="pagePrevious" style="display:none;">
+                                    <input type="submit" style="position:absolute;bottom:8px;left:420px;cursor:pointer;" onclick="moveprevious()" value="上一页">
+                                </form>
+
+                                <a style="position:absolute;bottom:8px;left:474px;" id="pageNum" class="actived" th:text="${page}"></a>
+
+                                <form th:action="@{/tags/pageNext}" method="post">
+                                    <input type="text" name="pageNum" id="pageNext" style="display:none;">
+                                    <input type="submit" style="position:absolute;bottom:8px;left:520px;cursor:pointer;" th:onclick="'javascript:movenext(\''+${colNum}+'\')'" value="下一页">
+                                </form>
+
+                                <form th:action="@{/tags/pageNext}" method="post" onsubmit="return judgepage()">
+                                    <input type="text" name="pageNum"  id="pagetext" style="position:absolute;bottom:8px;left:580px;" class="pagetext"/>
+									<span th:text="${colNum}" style="display: none" id="maxpage"></span>
+                                    <input type="submit" style="position:absolute;bottom:8px;left:650px;width:50px;" value="跳转">
+                                </form>
+                            </div>
+						</div>
+						<!-- End Pagging -->
+						
+					</div>
+					<!-- Table -->
+					
+				</div>
+				<!-- End Box -->
+			</div>
+			<!-- End Content -->
+			<div id="sidebar">
+				
+				<!-- Box -->
+				<div class="box">
+					
+					<!-- Box Head -->
+					<div class="box-head">
+						<h2>查询管理</h2>
+					</div>
+					<!-- End Box Head-->
+					
+					<div class="box-content">
+						
+						<form th:action="@{/tags/find}" method="post">
+
+						<!-- Sort -->
+							<div class="sort">
+								<label>标签编号</label>
+								<input type="text" name="id" class="field size2">
+								<label>标签名称</label>
+								<input type="text" name="name" class="field size2">
+		
+								<div class="sort1">
+									<label>排序方式</label>
+									<select class="field">
+										<option value="">标签编号</option>
+									</select>
+									<!-- Form Buttons -->
+									<div class="buttons">
+										<input type="submit" class="button" value="提交" />
+									</div>
+								</div>
+								<!-- End Form Buttons -->
+							</div>
+						<!-- End Sort -->
+						</form>
+						
+					</div>
+				</div>
+				<!-- End Box -->
+			</div>
+			<!-- End Sidebar -->
+			<div id="contentbottom1">
+				<!-- Box -->
+				<div class="box">
+					<!-- Box Head -->
+					<div class="box-head">
+						<h2>添加标签记录</h2>
+					</div>
+					<!-- End Box Head -->
+					
+					<form th:action="@{/tags/add}" method="post">
+						
+						<!-- Form -->
+						<div class="form">
+								<p>
+									<span class="req"></span>
+									<label>标签名称<span>(必须填写)</span></label>
+									<input type="text" name="name" class="field size1" />
+								</p>		
+								
+						</div>
+						<!-- End Form -->
+						
+						<!-- Form Buttons -->
+						<div class="buttons">
+							<input type="submit" class="button" value="提交" />
+						</div>
+						<!-- End Form Buttons -->
+					</form>
+				</div>
+				<!-- End Box -->
+
+			</div>
+			<!-- End Contentbottom -->
+			<div id="contentbottom2">
+					<!-- Box -->
+					<div class="box">
+						<!-- Box Head -->
+						<div class="box-head">
+							<h2>修改标签记录</h2>
+						</div>
+						<!-- End Box Head -->
+						
+						<form th:action="@{/tags/update}" method="post">
+							
+							<!-- Form -->
+							<div class="form">
+								<p style="display: none">
+									<span class="req"></span>
+									<label>标签编号<span>(必须填写)</span></label>
+									<input type="text" name="id" id="updateID" class="field size1" />
+								</p>
+								<p>
+									<span class="req"></span>
+									<label>标签名称<span>(必须填写)</span></label>
+									<input type="text" name="name" id="updateName" class="field size1" />
+								</p>		
+								
+							</div>
+							<!-- End Form -->
+							
+							<!-- Form Buttons -->
+							<div class="buttons">
+								<input type="submit" class="button" value="提交" />
+							</div>
+							<!-- End Form Buttons -->
+						</form>
+					</div>
+					<!-- End Box -->
+	
+				</div>
+				<!-- End Contentbottom -->
+			
+			<!-- Sidebar -->
+
+			
+			<div class="cl">&nbsp;</div>			
+		</div>
+		<!-- Main -->
+	</div>
+</div>
+<!-- End Container -->
+
+<!-- Footer -->
+<div id="footer">
+	<div class="shell">
+		<span class="left">&copy; 2018-工程实训</span>
+		<span class="right">
+			后台数据管理
+		</span>
+	</div>
+</div>
+<!-- End Footer -->
+	
+</body>
+</html>
